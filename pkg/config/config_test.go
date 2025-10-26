@@ -28,8 +28,8 @@ func TestGetConfigDir(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Set up environment
 			if tt.envVar != "" {
-				defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
-				os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", tt.envVar)
+				defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")    //nolint:errcheck,gosec // Test cleanup
+				os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", tt.envVar) //nolint:errcheck,gosec // Test setup
 			}
 
 			got, err := GetConfigDir()
@@ -110,12 +110,12 @@ func TestLoadClientConfig(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Set up environment
 			if tt.clientIDEnv != "" {
-				defer os.Unsetenv("GLOBUS_CLIENT_ID")
-				os.Setenv("GLOBUS_CLIENT_ID", tt.clientIDEnv)
+				defer os.Unsetenv("GLOBUS_CLIENT_ID")         //nolint:errcheck,gosec // Test cleanup
+				os.Setenv("GLOBUS_CLIENT_ID", tt.clientIDEnv) //nolint:errcheck,gosec // Test setup
 			}
 			if tt.clientSecretEnv != "" {
-				defer os.Unsetenv("GLOBUS_CLIENT_SECRET")
-				os.Setenv("GLOBUS_CLIENT_SECRET", tt.clientSecretEnv)
+				defer os.Unsetenv("GLOBUS_CLIENT_SECRET")             //nolint:errcheck,gosec // Test cleanup
+				os.Setenv("GLOBUS_CLIENT_SECRET", tt.clientSecretEnv) //nolint:errcheck,gosec // Test setup
 			}
 
 			cfg, err := LoadClientConfig()
@@ -184,8 +184,8 @@ func TestEnsureConfigDir(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	err := EnsureConfigDir()
 	if err != nil {
@@ -214,8 +214,8 @@ func TestEnsureTokensDir(t *testing.T) {
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 	testTokensDir := filepath.Join(testConfigDir, "tokens")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	err := EnsureTokensDir()
 	if err != nil {

@@ -103,8 +103,8 @@ func TestSaveAndLoadToken(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	profile := "test-profile"
 	token := &TokenInfo{
@@ -155,8 +155,8 @@ func TestLoadToken_NotExists(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	profile := "nonexistent-profile"
 
@@ -171,8 +171,8 @@ func TestDeleteToken(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	profile := "test-profile"
 	token := &TokenInfo{
@@ -202,8 +202,8 @@ func TestDeleteToken_NotExists(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	profile := "nonexistent-profile"
 
@@ -219,8 +219,8 @@ func TestSaveToken_FilePermissions(t *testing.T) {
 	tmpDir := t.TempDir()
 	testConfigDir := filepath.Join(tmpDir, "test-config")
 
-	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir)
-	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")
+	os.Setenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR", testConfigDir) //nolint:errcheck,gosec // Test setup
+	defer os.Unsetenv("GLOBUS_CONNECT_SERVER_CONFIG_DIR")        //nolint:errcheck,gosec // Test cleanup
 
 	profile := "test-profile"
 	token := &TokenInfo{

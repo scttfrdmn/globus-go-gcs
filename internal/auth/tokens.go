@@ -102,7 +102,7 @@ func LoadToken(profile string) (*TokenInfo, error) {
 	}
 
 	// Read token file
-	data, err := os.ReadFile(tokenPath)
+	data, err := os.ReadFile(tokenPath) //nolint:gosec // Intentional file read from config directory
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, fmt.Errorf("not logged in (no token found for profile %q)", profile)
