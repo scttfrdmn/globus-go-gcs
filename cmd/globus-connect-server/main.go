@@ -9,6 +9,7 @@ import (
 	"os"
 
 	authcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/auth"
+	endpointcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/endpoint"
 	"github.com/spf13/cobra"
 )
 
@@ -41,8 +42,10 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 	rootCmd.AddCommand(authcmd.NewLogoutCmd())
 	rootCmd.AddCommand(authcmd.NewWhoamiCmd())
 
+	// Endpoint commands
+	rootCmd.AddCommand(endpointcmd.NewEndpointCmd())
+
 	// TODO: Add additional command groups
-	// rootCmd.AddCommand(newEndpointCmd())
 	// rootCmd.AddCommand(newNodeCmd())
 	// rootCmd.AddCommand(newCollectionCmd())
 	// rootCmd.AddCommand(newStorageGatewayCmd())
