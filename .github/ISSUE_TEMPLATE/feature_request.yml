@@ -1,0 +1,167 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for globus-go-gcs
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible.
+
+  - type: dropdown
+    id: persona
+    attributes:
+      label: Who is this feature for?
+      description: |
+        Select the primary user persona(s) who would benefit from this feature.
+      multiple: true
+      options:
+        - System Administrator (deploys/maintains GCS endpoints)
+        - Data Manager (manages collections and access control)
+        - Research PI (shares datasets with collaborators)
+        - IT Manager (oversees multiple GCS endpoints)
+        - Other (please describe in Additional Context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Roadmap Phase
+      description: |
+        Which development phase does this feature align with? See PROJECT_PLAN.md for phase details.
+      options:
+        - "Phase 0 - Project Setup & Infrastructure"
+        - "Phase 1 - Proof of Concept (Auth + Basic Commands)"
+        - "Phase 2 - Core Management (Endpoint & Node)"
+        - "Phase 3 - Collections & Storage Gateways"
+        - "Phase 4 - Advanced Features (OIDC, policies, audit)"
+        - "Phase 5 - Polish & v1.0.0 Release"
+        - "Backlog - Future Consideration"
+        - "Not Sure"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this affect?
+      description: Select all that apply
+      multiple: true
+      options:
+        - CLI (command-line interface)
+        - GCS Manager API Client
+        - Endpoint Management
+        - Node Management
+        - Collection Management
+        - Storage Gateway Management
+        - Authentication/OAuth2
+        - Configuration Management
+        - Output Formatting
+        - RBAC/Roles
+        - User Credentials
+        - OIDC
+        - Audit Logs
+        - Diagnostics
+        - Tests
+        - Build/CI
+        - Documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: |
+        Describe the problem or pain point this feature would address.
+        Use "As a [persona], I need [action] because [reason]" format.
+      placeholder: |
+        As a [System Administrator/Data Manager/Research PI/IT Manager], I need to [action] because [reason].
+
+        **Current Pain Point:**
+        [Describe the current challenge or limitation]
+
+        **Success Metric:**
+        [How will you measure if this feature solves the problem?]
+
+        **Related to Python GCS CLI:**
+        [Does the Python CLI have this feature? If so, how does it work?]
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you envision this feature working
+      placeholder: |
+        Add a new command/flag/feature that...
+
+        Example usage:
+        \`\`\`bash
+        globus-connect-server endpoint create --name "My Endpoint" ...
+        \`\`\`
+
+        This would allow users to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative approaches or workarounds?
+      placeholder: |
+        Currently I work around this by...
+        OR
+        I haven't found a good workaround
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to your work?
+      options:
+        - Critical (blocking important work)
+        - High (significant impact on productivity)
+        - Medium (nice to have, noticeable improvement)
+        - Low (minor convenience)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: breaking_change
+    attributes:
+      label: Breaking Change
+      description: Would this feature require breaking changes to existing functionality?
+      options:
+        - label: This feature would require breaking changes
+        - label: I'm willing to accept breaking changes if needed
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to contribute a PR for this feature
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other information, examples, or references that would help explain this feature
+      placeholder: |
+        Related issues/PRs: #123
+        Python GCS CLI reference: [link]
+        Screenshots/mockups: [attach images]
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested before
+          required: true
+        - label: I have checked the PROJECT_PLAN.md to see if this is already planned
+          required: true

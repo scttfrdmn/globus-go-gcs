@@ -1,0 +1,54 @@
+# Binaries
+globus-connect-server
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+bin/
+
+# Config files with credentials
+.env
+.env.local
+.env.test
+*.key
+*.pem
+
+# Test GCS credentials
+test-credentials.json
+
+# Debug files
+debug.log
+*.log
+
+# Temporary files
+tmp/
+temp/

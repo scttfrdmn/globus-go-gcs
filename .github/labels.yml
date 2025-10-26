@@ -1,0 +1,265 @@
+# Globus Connect Server Go Port - Label Configuration
+# Organized hierarchically: Type -> Priority -> Area -> Persona -> Phase -> Status
+
+# ============================================================================
+# TYPE LABELS - What kind of issue/PR is this?
+# ============================================================================
+- name: bug
+  description: Something isn't working as expected
+  color: "d73a4a"
+
+- name: enhancement
+  description: New feature or capability request
+  color: "a2eeef"
+
+- name: documentation
+  description: Improvements or additions to documentation
+  color: "0075ca"
+
+- name: technical-debt
+  description: Code quality, refactoring, or architectural improvements
+  color: "fbca04"
+
+- name: question
+  description: Further information is requested
+  color: "d876e3"
+
+# ============================================================================
+# PRIORITY LABELS - How urgent is this?
+# ============================================================================
+- name: "priority: critical"
+  description: Urgent issue blocking important functionality or security
+  color: "b60205"
+
+- name: "priority: high"
+  description: Important issue affecting many users or key features
+  color: "d93f0b"
+
+- name: "priority: medium"
+  description: Normal priority issue
+  color: "fbca04"
+
+- name: "priority: low"
+  description: Low priority issue or nice-to-have
+  color: "0e8a16"
+
+# ============================================================================
+# AREA LABELS - Which part of the codebase?
+# ============================================================================
+- name: "area: cli"
+  description: Command-line interface and user experience
+  color: "1d76db"
+
+- name: "area: gcs-client"
+  description: GCS Manager API client (pkg/client/gcs/)
+  color: "1d76db"
+
+- name: "area: endpoint"
+  description: Endpoint management commands
+  color: "5319e7"
+
+- name: "area: node"
+  description: Data transfer node commands
+  color: "5319e7"
+
+- name: "area: collection"
+  description: Collection management commands
+  color: "5319e7"
+
+- name: "area: storage-gateway"
+  description: Storage gateway commands
+  color: "5319e7"
+
+- name: "area: auth"
+  description: Authentication and OAuth2 flow
+  color: "1d76db"
+
+- name: "area: config"
+  description: Configuration file management
+  color: "1d76db"
+
+- name: "area: output"
+  description: Terminal output and formatting (text, JSON, CSV)
+  color: "1d76db"
+
+- name: "area: role"
+  description: Role-based access control (RBAC)
+  color: "5319e7"
+
+- name: "area: user-credentials"
+  description: User credential management
+  color: "5319e7"
+
+- name: "area: oidc"
+  description: OIDC server management
+  color: "5319e7"
+
+- name: "area: audit"
+  description: Audit log search and export
+  color: "5319e7"
+
+- name: "area: diagnostics"
+  description: Self-diagnostic utilities
+  color: "5319e7"
+
+- name: "area: tests"
+  description: Testing infrastructure and test coverage
+  color: "0e8a16"
+
+- name: "area: build"
+  description: Build system, CI/CD, and release process
+  color: "0e8a16"
+
+- name: "area: docs"
+  description: Documentation and examples
+  color: "0075ca"
+
+# ============================================================================
+# PERSONA LABELS - Who is the user?
+# ============================================================================
+- name: "persona: system-admin"
+  description: System administrator deploying/maintaining GCS endpoints
+  color: "c5def5"
+
+- name: "persona: data-manager"
+  description: Data manager creating collections and managing access
+  color: "c5def5"
+
+- name: "persona: research-pi"
+  description: Research PI managing lab data sharing
+  color: "c5def5"
+
+- name: "persona: it-manager"
+  description: IT manager overseeing multiple GCS endpoints
+  color: "c5def5"
+
+# ============================================================================
+# PHASE LABELS - Roadmap alignment
+# ============================================================================
+- name: "phase: 0-setup"
+  description: "Phase 0 - Project Setup & Infrastructure"
+  color: "c2e0c6"
+
+- name: "phase: 1-poc"
+  description: "Phase 1 - Proof of Concept (Auth + Basic Commands)"
+  color: "c2e0c6"
+
+- name: "phase: 2-core"
+  description: "Phase 2 - Core Management (Endpoint & Node)"
+  color: "c2e0c6"
+
+- name: "phase: 3-collections"
+  description: "Phase 3 - Collections & Storage Gateways"
+  color: "c2e0c6"
+
+- name: "phase: 4-advanced"
+  description: "Phase 4 - Advanced Features (OIDC, policies, audit)"
+  color: "c2e0c6"
+
+- name: "phase: 5-release"
+  description: "Phase 5 - Polish & v1.0.0 Release"
+  color: "0e8a16"
+
+- name: "phase: backlog"
+  description: "Backlog - Future consideration"
+  color: "ededed"
+
+# ============================================================================
+# STATUS LABELS - What's the workflow state?
+# ============================================================================
+- name: triage
+  description: Needs initial review and categorization
+  color: "ededed"
+
+- name: needs-info
+  description: Waiting for more information from reporter
+  color: "d4c5f9"
+
+- name: blocked
+  description: Cannot proceed due to external dependency
+  color: "b60205"
+
+- name: ready
+  description: Ready to be worked on
+  color: "0e8a16"
+
+- name: in-progress
+  description: Currently being worked on
+  color: "fbca04"
+
+- name: in-review
+  description: Under review (PR or design)
+  color: "0052cc"
+
+- name: awaiting-merge
+  description: Approved and waiting to be merged
+  color: "0e8a16"
+
+# ============================================================================
+# RESOLUTION LABELS - How was this closed?
+# ============================================================================
+- name: duplicate
+  description: This issue or PR already exists
+  color: "cfd3d7"
+
+- name: wontfix
+  description: This will not be worked on
+  color: "ffffff"
+
+- name: invalid
+  description: This doesn't seem right or is not applicable
+  color: "e4e669"
+
+- name: works-as-designed
+  description: Current behavior is intentional
+  color: "ffffff"
+
+# ============================================================================
+# SPECIAL LABELS - Community and contributor support
+# ============================================================================
+- name: "good first issue"
+  description: Good for newcomers to the project
+  color: "7057ff"
+
+- name: "help wanted"
+  description: Extra attention is needed from community
+  color: "008672"
+
+- name: breaking-change
+  description: Introduces breaking changes to API or behavior
+  color: "b60205"
+
+- name: security
+  description: Security-related issue or vulnerability
+  color: "b60205"
+
+- name: performance
+  description: Performance optimization or improvement
+  color: "84b6eb"
+
+- name: dependencies
+  description: Pull requests that update a dependency file
+  color: "0366d6"
+
+# ============================================================================
+# GCS-SPECIFIC LABELS
+# ============================================================================
+- name: "gcs: v5.4"
+  description: GCS v5.4 feature parity
+  color: "ff9900"
+
+- name: "storage-connector: posix"
+  description: POSIX filesystem storage connector
+  color: "ff9900"
+
+- name: "storage-connector: s3"
+  description: S3 storage connector
+  color: "ff9900"
+
+- name: "storage-connector: gcs"
+  description: Google Cloud Storage connector
+  color: "ff9900"
+
+- name: "storage-connector: azure"
+  description: Azure Blob storage connector
+  color: "ff9900"
