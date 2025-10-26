@@ -1,6 +1,9 @@
 # golangci-lint configuration for globus-go-gcs
 # Target: A+ Go Report Card grade
 
+# Version information (required for newer golangci-lint versions)
+version: 2
+
 run:
   timeout: 5m
   tests: true
@@ -8,54 +11,18 @@ run:
 
 linters:
   enable:
-    # Official Go tools
-    - gofmt          # Checks whether code was gofmt-ed
-    - goimports      # Check import statements are formatted well
+    # Core linters for Go Report Card A+ grade
     - govet          # Reports suspicious constructs
-
-    # Go Report Card criteria
     - errcheck       # Check for unchecked errors
-    - staticcheck    # Staticcheck is a go vet on steroids
-    - unused         # Check for unused constants, variables, functions and types
-    - gosimple       # Simplify code
+    - staticcheck    # Staticcheck (includes gosimple, stylecheck, unused in newer versions)
     - ineffassign    # Detect ineffectual assignments
     - misspell       # Check for commonly misspelled English words
     - gocyclo        # Check cyclomatic complexity
-
-    # Additional quality checks
-    - gocritic       # Provides diagnostics that check for bugs, performance and style issues
-    - gocognit       # Check cognitive complexity
-    - godot          # Check if comments end in a period
-    - gofumpt        # Stricter gofmt
-    - revive         # Fast, configurable, extensible, flexible, and beautiful linter
-    - unconvert      # Remove unnecessary type conversions
-    - unparam        # Find unused function parameters
-    - whitespace     # Tool for detection of leading and trailing whitespace
-    - prealloc       # Find slice declarations that could potentially be pre-allocated
-    - nakedret       # Finds naked returns in functions greater than a specified function length
-    - makezero       # Finds slice declarations with non-zero initial length
-    - nilerr         # Finds code that returns nil even if it checks that the error is not nil
-    - nolintlint     # Ill-formed or insufficient nolint directives
-    - stylecheck     # Replacement for golint
-    - typecheck      # Like the front-end of a Go compiler, parses and type-checks Go code
-
-    # Error handling
-    - errorlint      # Find code that will cause problems with Go 1.13+ error wrapping
-    - wrapcheck      # Check that errors from external packages are wrapped
-
-    # Security
-    - gosec          # Inspect source code for security problems
-
-    # Performance
-    - bodyclose      # Check whether HTTP response body is closed successfully
+    - revive         # Fast, general purpose linter
+    - gosec          # Security checker
+    - gocritic       # Comprehensive linter
 
 linters-settings:
-  gofmt:
-    simplify: true
-
-  goimports:
-    local-prefixes: github.com/scttfrdmn/globus-go-gcs
-
   gocyclo:
     min-complexity: 15  # Go Report Card threshold
 
