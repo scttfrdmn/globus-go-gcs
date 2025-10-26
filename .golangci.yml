@@ -1,0 +1,150 @@
+# golangci-lint configuration for globus-go-gcs
+# Target: A+ Go Report Card grade
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    # Official Go tools
+    - gofmt          # Checks whether code was gofmt-ed
+    - goimports      # Check import statements are formatted well
+    - govet          # Reports suspicious constructs
+
+    # Go Report Card criteria
+    - errcheck       # Check for unchecked errors
+    - staticcheck    # Staticcheck is a go vet on steroids
+    - unused         # Check for unused constants, variables, functions and types
+    - gosimple       # Simplify code
+    - ineffassign    # Detect ineffectual assignments
+    - misspell       # Check for commonly misspelled English words
+    - gocyclo        # Check cyclomatic complexity
+
+    # Additional quality checks
+    - gocritic       # Provides diagnostics that check for bugs, performance and style issues
+    - gocognit       # Check cognitive complexity
+    - godot          # Check if comments end in a period
+    - gofumpt        # Stricter gofmt
+    - revive         # Fast, configurable, extensible, flexible, and beautiful linter
+    - unconvert      # Remove unnecessary type conversions
+    - unparam        # Find unused function parameters
+    - whitespace     # Tool for detection of leading and trailing whitespace
+    - prealloc       # Find slice declarations that could potentially be pre-allocated
+    - nakedret       # Finds naked returns in functions greater than a specified function length
+    - makezero       # Finds slice declarations with non-zero initial length
+    - nilerr         # Finds code that returns nil even if it checks that the error is not nil
+    - nolintlint     # Ill-formed or insufficient nolint directives
+    - stylecheck     # Replacement for golint
+    - typecheck      # Like the front-end of a Go compiler, parses and type-checks Go code
+
+    # Error handling
+    - errorlint      # Find code that will cause problems with Go 1.13+ error wrapping
+    - wrapcheck      # Check that errors from external packages are wrapped
+
+    # Security
+    - gosec          # Inspect source code for security problems
+
+    # Performance
+    - bodyclose      # Check whether HTTP response body is closed successfully
+
+linters-settings:
+  gofmt:
+    simplify: true
+
+  goimports:
+    local-prefixes: github.com/scttfrdmn/globus-go-gcs
+
+  gocyclo:
+    min-complexity: 15  # Go Report Card threshold
+
+  gocognit:
+    min-complexity: 20  # Cognitive complexity threshold
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+
+  revive:
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
+
+  staticcheck:
+    checks: ["all"]
+
+  stylecheck:
+    checks: ["all"]
+    initialisms: ["ACL", "API", "ASCII", "CPU", "CSS", "DNS", "EOF", "GUID", "HTML", "HTTP", "HTTPS", "ID", "IP", "JSON", "JWT", "LHS", "QPS", "RAM", "RHS", "RPC", "SLA", "SMTP", "SQL", "SSH", "TCP", "TLS", "TTL", "UDP", "UI", "UID", "UUID", "URI", "URL", "UTF8", "VM", "XML", "XMPP", "XSRF", "XSS", "GCS", "RBAC", "OIDC", "OAuth"]
+
+  gosec:
+    excludes:
+      - G104  # Audit errors not checked (covered by errcheck)
+
+  errorlint:
+    errorf: true
+    asserts: true
+    comparison: true
+
+  nakedret:
+    max-func-lines: 30  # Don't allow naked returns in functions > 30 lines
+
+  misspell:
+    locale: US
+    ignore-words:
+      - globus  # Proper noun
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - gocritic
+
+    # Ignore long lines in examples
+    - path: examples/
+      linters:
+        - lll
+
+    # Allow init functions for flag registration
+    - source: "^func init\\(\\)"
+      linters:
+        - gochecknoinits
+
+output:
+  sort-results: true

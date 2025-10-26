@@ -1,8 +1,13 @@
 # Globus Connect Server Go Port
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/scttfrdmn/globus-go-gcs)](https://goreportcard.com/report/github.com/scttfrdmn/globus-go-gcs)
+[![CI](https://github.com/scttfrdmn/globus-go-gcs/workflows/CI/badge.svg)](https://github.com/scttfrdmn/globus-go-gcs/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/scttfrdmn/globus-go-gcs)](go.mod)
+
 A complete Go port of Globus Connect Server v5 CLI - a drop-in replacement for the Python `globus-connect-server` command with 100% feature parity.
 
-> **STATUS**: 🚧 **In Development** - Phase 0 (Project Setup)
+> **STATUS**: 🚧 **In Development** - Phase 0 (Project Setup Complete) → Phase 1 (Starting)
 >
 > This project is in active development. See [PROJECT_PLAN.md](PROJECT_PLAN.md) for the complete development roadmap.
 
@@ -16,6 +21,7 @@ A complete Go port of Globus Connect Server v5 CLI - a drop-in replacement for t
 - ✅ **Cross-Platform**: Easy ARM64 support, works on all major platforms
 - ✅ **Performance**: Faster startup time, lower memory footprint
 - ✅ **Maintainability**: Strong typing, better tooling, clear dependency management
+- ✅ **Code Quality**: Idiomatic Go practices, A+ Go Report Card grade
 
 ### Project Goals
 
@@ -23,6 +29,7 @@ A complete Go port of Globus Connect Server v5 CLI - a drop-in replacement for t
 2. **Drop-in Replacement**: Same command structure, compatible configuration files
 3. **Config Compatibility**: Reads and writes same config files as Python CLI
 4. **Better UX**: Improved error messages, tab completion, interactive prompts
+5. **Idiomatic Go**: Follow Go best practices, achieve **A+ Go Report Card grade**
 
 ## Features (Roadmap)
 
@@ -208,6 +215,65 @@ go test -tags=integration ./...
 # With coverage
 go test -cover ./...
 ```
+
+## Code Quality Standards
+
+This project is committed to **idiomatic Go practices** and achieving an **A+ grade on [Go Report Card](https://goreportcard.com/)**.
+
+### Quality Checklist
+
+Before every commit, ensure:
+
+```bash
+# 1. Format code
+make fmt
+
+# 2. Run go vet
+make vet
+
+# 3. Run linter
+make lint
+
+# 4. Run tests
+make test
+
+# Or run all checks at once
+make verify
+```
+
+### Go Report Card Criteria
+
+We maintain **100% compliance** with:
+
+- ✅ **gofmt**: All code formatted with `gofmt`
+- ✅ **go vet**: Zero issues from `go vet`
+- ✅ **golint/staticcheck**: Zero lint warnings
+- ✅ **gocyclo**: Cyclomatic complexity < 15 per function
+- ✅ **ineffassign**: No ineffectual assignments
+- ✅ **misspell**: No spelling errors
+
+### Idiomatic Go Practices
+
+We follow established Go conventions:
+
+- Clear, focused packages with single responsibility
+- Accept interfaces, return structs
+- Context-first parameter ordering
+- Comprehensive error handling with error wrapping
+- Table-driven tests with good coverage
+- Complete documentation for all exported symbols
+
+See [CODE_STANDARDS.md](CODE_STANDARDS.md) for detailed guidelines and examples.
+
+### CI/CD Quality Gates
+
+Our CI pipeline enforces:
+
+- Multi-OS testing (Ubuntu, macOS)
+- Multi-Go version support (1.21, 1.22, 1.23)
+- Comprehensive linting with golangci-lint (30+ linters enabled)
+- 80%+ test coverage requirement
+- Zero security issues (gosec)
 
 ## Project Management
 
