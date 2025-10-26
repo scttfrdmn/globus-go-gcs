@@ -1,5 +1,5 @@
 # Binaries
-globus-connect-server
+/globus-connect-server
 *.exe
 *.dll
 *.so
