@@ -11,6 +11,7 @@ import (
 	authcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/auth"
 	collectioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/collection"
 	endpointcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/endpoint"
+	nodecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/node"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
 	"github.com/spf13/cobra"
 )
@@ -53,8 +54,10 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 	// Storage gateway commands
 	rootCmd.AddCommand(storagegatewaycmd.NewStorageGatewayCmd())
 
+	// Node commands
+	rootCmd.AddCommand(nodecmd.NewNodeCmd())
+
 	// TODO: Add additional command groups
-	// rootCmd.AddCommand(newNodeCmd())
 	// rootCmd.AddCommand(newSessionCmd())
 
 	if err := rootCmd.Execute(); err != nil {
