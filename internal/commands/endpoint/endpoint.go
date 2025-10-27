@@ -24,6 +24,7 @@ defining the service's identity and general settings.`,
 	cmd.AddCommand(NewResetOwnerStringCmd())
 	cmd.AddCommand(NewSetSubscriptionIDCmd())
 	cmd.AddCommand(NewDomainCmd())
+	cmd.AddCommand(NewUpgradeCmd())
 
 	return cmd
 }

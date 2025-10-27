@@ -269,3 +269,33 @@ func (c *Client) DeleteEndpointDomain(ctx context.Context) error {
 
 	return nil
 }
+
+// CheckEndpointUpgrade checks if an endpoint upgrade is available.
+func (c *Client) CheckEndpointUpgrade(ctx context.Context) (*UpgradeInfo, error) {
+	resp, err := c.doRequest(ctx, http.MethodGet, "endpoint/upgrade/check", nil)
+	if err != nil {
+		return nil, fmt.Errorf("check endpoint upgrade: %w", err)
+	}
+
+	var info UpgradeInfo
+	if err := c.decodeResponse(resp, &info); err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+// UpgradeEndpoint upgrades the endpoint to the latest version.
+func (c *Client) UpgradeEndpoint(ctx context.Context) (*UpgradeResult, error) {
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint/upgrade", nil)
+	if err != nil {
+		return nil, fmt.Errorf("upgrade endpoint: %w", err)
+	}
+
+	var result UpgradeResult
+	if err := c.decodeResponse(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

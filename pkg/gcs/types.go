@@ -205,3 +205,22 @@ type AuditLog struct {
 	ClientIP    string            `json:"client_ip,omitempty"`
 	Metadata    map[string]string `json:"metadata,omitempty"`
 }
+
+// UpgradeInfo represents endpoint upgrade information.
+type UpgradeInfo struct {
+	CurrentVersion  string   `json:"current_version,omitempty"`
+	LatestVersion   string   `json:"latest_version,omitempty"`
+	UpgradeRequired bool     `json:"upgrade_required,omitempty"`
+	Compatible      bool     `json:"compatible,omitempty"`
+	ReleaseNotes    string   `json:"release_notes,omitempty"`
+	UpgradePath     []string `json:"upgrade_path,omitempty"`
+}
+
+// UpgradeResult represents the result of an endpoint upgrade operation.
+type UpgradeResult struct {
+	Success        bool   `json:"success"`
+	PreviousVersion string `json:"previous_version,omitempty"`
+	NewVersion     string `json:"new_version,omitempty"`
+	Message        string `json:"message,omitempty"`
+	RollbackAvailable bool `json:"rollback_available,omitempty"`
+}
