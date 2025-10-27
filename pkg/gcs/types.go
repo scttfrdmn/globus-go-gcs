@@ -170,3 +170,22 @@ type SharingPolicy struct {
 	SharingGroupsAllow []string `json:"sharing_groups_allow,omitempty"`
 	SharingGroupsDeny  []string `json:"sharing_groups_deny,omitempty"`
 }
+
+// UserCredential represents user storage credentials.
+type UserCredential struct {
+	ID               string            `json:"id,omitempty"`
+	IdentityID       string            `json:"identity_id,omitempty"`
+	StorageGatewayID string            `json:"storage_gateway_id,omitempty"`
+	Type             string            `json:"type,omitempty"` // "activescale", "oauth", "s3"
+	Username         string            `json:"username,omitempty"`
+	S3Keys           []S3Key           `json:"s3_keys,omitempty"`
+	OAuthToken       string            `json:"oauth_token,omitempty"`
+	Metadata         map[string]string `json:"metadata,omitempty"`
+}
+
+// S3Key represents an S3 IAM access key.
+type S3Key struct {
+	AccessKeyID     string    `json:"access_key_id,omitempty"`
+	SecretAccessKey string    `json:"secret_access_key,omitempty"`
+	CreatedAt       time.Time `json:"created_at,omitempty"`
+}

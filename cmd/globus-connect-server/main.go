@@ -18,6 +18,7 @@ import (
 	sessioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/session"
 	sharingpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/sharingpolicy"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
+	usercredentialcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/usercredential"
 	"github.com/spf13/cobra"
 )
 
@@ -76,6 +77,9 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 
 	// Sharing policy commands
 	rootCmd.AddCommand(sharingpolicycmd.NewSharingPolicyCmd())
+
+	// User credential commands
+	rootCmd.AddCommand(usercredentialcmd.NewUserCredentialCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
