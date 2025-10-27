@@ -218,3 +218,54 @@ func (c *Client) SetSubscriptionID(ctx context.Context, subscriptionID string) e
 
 	return nil
 }
+
+// SetupEndpointDomain configures a custom domain for the endpoint.
+func (c *Client) SetupEndpointDomain(ctx context.Context, config *DomainConfig) error {
+	if config == nil {
+		return fmt.Errorf("domain configuration is required")
+	}
+	if config.Domain == "" {
+		return fmt.Errorf("domain is required")
+	}
+
+	body, err := json.Marshal(config)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint/domain", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("setup endpoint domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// GetEndpointDomain retrieves the custom domain configuration for the endpoint.
+func (c *Client) GetEndpointDomain(ctx context.Context) (*DomainConfig, error) {
+	resp, err := c.doRequest(ctx, http.MethodGet, "endpoint/domain", nil)
+	if err != nil {
+		return nil, fmt.Errorf("get endpoint domain: %w", err)
+	}
+
+	var domain DomainConfig
+	if err := c.decodeResponse(resp, &domain); err != nil {
+		return nil, err
+	}
+
+	return &domain, nil
+}
+
+// DeleteEndpointDomain removes the custom domain configuration from the endpoint.
+func (c *Client) DeleteEndpointDomain(ctx context.Context) error {
+	resp, err := c.doRequest(ctx, http.MethodDelete, "endpoint/domain", nil)
+	if err != nil {
+		return fmt.Errorf("delete endpoint domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}

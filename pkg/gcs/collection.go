@@ -325,3 +325,68 @@ func (c *Client) SetSubscriptionAdminVerified(ctx context.Context, collectionID 
 
 	return nil
 }
+
+// SetupCollectionDomain configures a custom domain for a collection.
+func (c *Client) SetupCollectionDomain(ctx context.Context, collectionID string, config *DomainConfig) error {
+	if collectionID == "" {
+		return fmt.Errorf("collection ID is required")
+	}
+	if config == nil {
+		return fmt.Errorf("domain configuration is required")
+	}
+	if config.Domain == "" {
+		return fmt.Errorf("domain is required")
+	}
+
+	body, err := json.Marshal(config)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	path := fmt.Sprintf("collections/%s/domain", collectionID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("setup collection domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// GetCollectionDomain retrieves the custom domain configuration for a collection.
+func (c *Client) GetCollectionDomain(ctx context.Context, collectionID string) (*DomainConfig, error) {
+	if collectionID == "" {
+		return nil, fmt.Errorf("collection ID is required")
+	}
+
+	path := fmt.Sprintf("collections/%s/domain", collectionID)
+	resp, err := c.doRequest(ctx, http.MethodGet, path, nil)
+	if err != nil {
+		return nil, fmt.Errorf("get collection domain: %w", err)
+	}
+
+	var domain DomainConfig
+	if err := c.decodeResponse(resp, &domain); err != nil {
+		return nil, err
+	}
+
+	return &domain, nil
+}
+
+// DeleteCollectionDomain removes the custom domain configuration from a collection.
+func (c *Client) DeleteCollectionDomain(ctx context.Context, collectionID string) error {
+	if collectionID == "" {
+		return fmt.Errorf("collection ID is required")
+	}
+
+	path := fmt.Sprintf("collections/%s/domain", collectionID)
+	resp, err := c.doRequest(ctx, http.MethodDelete, path, nil)
+	if err != nil {
+		return fmt.Errorf("delete collection domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}

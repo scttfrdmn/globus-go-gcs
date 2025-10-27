@@ -115,3 +115,11 @@ type Node struct {
 	Incoming  bool   `json:"incoming,omitempty"`
 	Outgoing  bool   `json:"outgoing,omitempty"`
 }
+
+// DomainConfig represents custom domain configuration.
+type DomainConfig struct {
+	Domain      string `json:"domain"`
+	Certificate string `json:"certificate,omitempty"`
+	PrivateKey  string `json:"private_key,omitempty"`
+	Verified    bool   `json:"verified,omitempty"`
+}
