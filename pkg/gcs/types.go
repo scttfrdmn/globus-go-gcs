@@ -157,3 +157,16 @@ type Session struct {
 	AllowedScopes           []string          `json:"allowed_scopes,omitempty"`
 	Metadata                map[string]string `json:"metadata,omitempty"`
 }
+
+// SharingPolicy represents a collection sharing policy.
+type SharingPolicy struct {
+	ID                 string   `json:"id,omitempty"`
+	CollectionID       string   `json:"collection_id,omitempty"`
+	Name               string   `json:"name,omitempty"`
+	Description        string   `json:"description,omitempty"`
+	SharingRestrict    string   `json:"sharing_restrict,omitempty"`
+	SharingUsersAllow  []string `json:"sharing_users_allow,omitempty"`
+	SharingUsersDeny   []string `json:"sharing_users_deny,omitempty"`
+	SharingGroupsAllow []string `json:"sharing_groups_allow,omitempty"`
+	SharingGroupsDeny  []string `json:"sharing_groups_deny,omitempty"`
+}

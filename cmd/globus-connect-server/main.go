@@ -16,6 +16,7 @@ import (
 	oidccmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/oidc"
 	rolecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/role"
 	sessioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/session"
+	sharingpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/sharingpolicy"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
 	"github.com/spf13/cobra"
 )
@@ -72,6 +73,9 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 
 	// Session commands
 	rootCmd.AddCommand(sessioncmd.NewSessionCmd())
+
+	// Sharing policy commands
+	rootCmd.AddCommand(sharingpolicycmd.NewSharingPolicyCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
