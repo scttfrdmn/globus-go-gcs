@@ -22,6 +22,10 @@ both mapped collections (direct storage access) and guest collections
 	cmd.AddCommand(NewDeleteCmd())
 	cmd.AddCommand(NewCheckCmd())
 	cmd.AddCommand(NewBatchDeleteCmd())
+	cmd.AddCommand(NewSetOwnerCmd())
+	cmd.AddCommand(NewSetOwnerStringCmd())
+	cmd.AddCommand(NewResetOwnerStringCmd())
+	cmd.AddCommand(NewSetSubscriptionAdminVerifiedCmd())
 
 	return cmd
 }

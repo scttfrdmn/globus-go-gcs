@@ -131,3 +131,90 @@ func (c *Client) ConvertDeploymentKey(ctx context.Context, oldKey string) (*Depl
 
 	return &result, nil
 }
+
+// SetEndpointOwner assigns the endpoint owner role to a specified principal.
+func (c *Client) SetEndpointOwner(ctx context.Context, principalURN string) error {
+	if principalURN == "" {
+		return fmt.Errorf("principal URN is required")
+	}
+
+	payload := map[string]string{
+		"principal": principalURN,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/owner", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set endpoint owner: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// SetEndpointOwnerString sets a custom display name for the endpoint owner.
+func (c *Client) SetEndpointOwnerString(ctx context.Context, ownerString string) error {
+	if ownerString == "" {
+		return fmt.Errorf("owner string is required")
+	}
+
+	payload := map[string]string{
+		"owner_string": ownerString,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/owner-string", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set endpoint owner string: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// ResetEndpointOwnerString resets the owner string to the default (ClientID).
+func (c *Client) ResetEndpointOwnerString(ctx context.Context) error {
+	resp, err := c.doRequest(ctx, http.MethodDelete, "endpoint/owner-string", nil)
+	if err != nil {
+		return fmt.Errorf("reset endpoint owner string: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// SetSubscriptionID updates the subscription assignment for the endpoint.
+func (c *Client) SetSubscriptionID(ctx context.Context, subscriptionID string) error {
+	if subscriptionID == "" {
+		return fmt.Errorf("subscription ID is required")
+	}
+
+	payload := map[string]string{
+		"subscription_id": subscriptionID,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/subscription", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set subscription ID: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}

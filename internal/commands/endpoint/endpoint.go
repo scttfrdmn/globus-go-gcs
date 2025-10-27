@@ -19,6 +19,10 @@ defining the service's identity and general settings.`,
 	cmd.AddCommand(NewSetupCmd())
 	cmd.AddCommand(NewCleanupCmd())
 	cmd.AddCommand(NewKeyConvertCmd())
+	cmd.AddCommand(NewSetOwnerCmd())
+	cmd.AddCommand(NewSetOwnerStringCmd())
+	cmd.AddCommand(NewResetOwnerStringCmd())
+	cmd.AddCommand(NewSetSubscriptionIDCmd())
 
 	return cmd
 }
