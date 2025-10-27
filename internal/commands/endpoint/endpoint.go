@@ -15,6 +15,7 @@ defining the service's identity and general settings.`,
 
 	// Add subcommands
 	cmd.AddCommand(NewShowCmd())
+	cmd.AddCommand(NewUpdateCmd())
 
 	return cmd
 }
