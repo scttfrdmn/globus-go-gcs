@@ -149,3 +149,108 @@ func (c *Client) DeleteNode(ctx context.Context, nodeID string) error {
 
 	return nil
 }
+
+// SetupNode configures and initializes a new node.
+func (c *Client) SetupNode(ctx context.Context, node *Node) (*Node, error) {
+	if node == nil {
+		return nil, fmt.Errorf("node configuration is required")
+	}
+
+	// Marshal the node to JSON
+	body, err := json.Marshal(node)
+	if err != nil {
+		return nil, fmt.Errorf("marshal node: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "nodes/setup", bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("setup node: %w", err)
+	}
+
+	var created Node
+	if err := c.decodeResponse(resp, &created); err != nil {
+		return nil, err
+	}
+
+	return &created, nil
+}
+
+// CleanupNode removes a node and its configuration.
+func (c *Client) CleanupNode(ctx context.Context, nodeID string) error {
+	if nodeID == "" {
+		return fmt.Errorf("node ID is required")
+	}
+
+	path := fmt.Sprintf("nodes/%s/cleanup", nodeID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return fmt.Errorf("cleanup node: %w", err)
+	}
+
+	// Close response body
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// EnableNode activates a node for data transfers.
+func (c *Client) EnableNode(ctx context.Context, nodeID string) error {
+	if nodeID == "" {
+		return fmt.Errorf("node ID is required")
+	}
+
+	path := fmt.Sprintf("nodes/%s/enable", nodeID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return fmt.Errorf("enable node: %w", err)
+	}
+
+	// Close response body
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// DisableNode deactivates a node, preventing new transfers.
+func (c *Client) DisableNode(ctx context.Context, nodeID string) error {
+	if nodeID == "" {
+		return fmt.Errorf("node ID is required")
+	}
+
+	path := fmt.Sprintf("nodes/%s/disable", nodeID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return fmt.Errorf("disable node: %w", err)
+	}
+
+	// Close response body
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// NodeSecret represents a generated node authentication secret.
+type NodeSecret struct {
+	NodeID string `json:"node_id"`
+	Secret string `json:"secret"`
+}
+
+// GenerateNodeSecret generates a new authentication secret for a node.
+func (c *Client) GenerateNodeSecret(ctx context.Context, nodeID string) (*NodeSecret, error) {
+	if nodeID == "" {
+		return nil, fmt.Errorf("node ID is required")
+	}
+
+	path := fmt.Sprintf("nodes/%s/new-secret", nodeID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, fmt.Errorf("generate node secret: %w", err)
+	}
+
+	var secret NodeSecret
+	if err := c.decodeResponse(resp, &secret); err != nil {
+		return nil, err
+	}
+
+	return &secret, nil
+}

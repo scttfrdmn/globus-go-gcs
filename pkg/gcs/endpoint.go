@@ -59,3 +59,75 @@ func (c *Client) UpdateEndpoint(ctx context.Context, endpoint *Endpoint) (*Endpo
 
 	return &updated, nil
 }
+
+// SetupEndpoint creates and initializes a new GCS endpoint.
+func (c *Client) SetupEndpoint(ctx context.Context, endpoint *Endpoint) (*Endpoint, error) {
+	if endpoint == nil {
+		return nil, fmt.Errorf("endpoint configuration is required")
+	}
+
+	// Marshal the endpoint to JSON
+	body, err := json.Marshal(endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("marshal endpoint: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint", bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("setup endpoint: %w", err)
+	}
+
+	var created Endpoint
+	if err := c.decodeResponse(resp, &created); err != nil {
+		return nil, err
+	}
+
+	return &created, nil
+}
+
+// CleanupEndpoint permanently removes the endpoint configuration.
+func (c *Client) CleanupEndpoint(ctx context.Context) error {
+	resp, err := c.doRequest(ctx, http.MethodDelete, "endpoint", nil)
+	if err != nil {
+		return fmt.Errorf("cleanup endpoint: %w", err)
+	}
+
+	// Close response body for DELETE requests
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// DeploymentKeyResult represents the result of a key conversion operation.
+type DeploymentKeyResult struct {
+	OldKey string `json:"old_key,omitempty"`
+	NewKey string `json:"new_key"`
+}
+
+// ConvertDeploymentKey converts an old deployment key to a new one.
+func (c *Client) ConvertDeploymentKey(ctx context.Context, oldKey string) (*DeploymentKeyResult, error) {
+	if oldKey == "" {
+		return nil, fmt.Errorf("old deployment key is required")
+	}
+
+	payload := map[string]string{
+		"old_key": oldKey,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint/key-convert", bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("convert deployment key: %w", err)
+	}
+
+	var result DeploymentKeyResult
+	if err := c.decodeResponse(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

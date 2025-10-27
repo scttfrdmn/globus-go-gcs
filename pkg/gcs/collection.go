@@ -149,3 +149,78 @@ func (c *Client) DeleteCollection(ctx context.Context, collectionID string) erro
 
 	return nil
 }
+
+// CollectionValidation represents the result of a collection validation check.
+type CollectionValidation struct {
+	CollectionID string             `json:"collection_id"`
+	Valid        bool               `json:"valid"`
+	Errors       []ValidationError  `json:"errors,omitempty"`
+	Warnings     []ValidationError  `json:"warnings,omitempty"`
+}
+
+// ValidationError represents a validation error or warning.
+type ValidationError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Field   string `json:"field,omitempty"`
+}
+
+// CheckCollection validates a collection's configuration.
+func (c *Client) CheckCollection(ctx context.Context, collectionID string) (*CollectionValidation, error) {
+	if collectionID == "" {
+		return nil, fmt.Errorf("collection ID is required")
+	}
+
+	path := fmt.Sprintf("collections/%s/check", collectionID)
+	resp, err := c.doRequest(ctx, http.MethodPost, path, nil)
+	if err != nil {
+		return nil, fmt.Errorf("check collection: %w", err)
+	}
+
+	var validation CollectionValidation
+	if err := c.decodeResponse(resp, &validation); err != nil {
+		return nil, err
+	}
+
+	return &validation, nil
+}
+
+// BatchDeleteResult represents the result of a batch delete operation.
+type BatchDeleteResult struct {
+	Deleted []string            `json:"deleted"`
+	Failed  []BatchDeleteError  `json:"failed,omitempty"`
+}
+
+// BatchDeleteError represents a failure in batch delete.
+type BatchDeleteError struct {
+	CollectionID string `json:"collection_id"`
+	Error        string `json:"error"`
+}
+
+// BatchDeleteCollections deletes multiple collections in a single operation.
+func (c *Client) BatchDeleteCollections(ctx context.Context, collectionIDs []string) (*BatchDeleteResult, error) {
+	if len(collectionIDs) == 0 {
+		return nil, fmt.Errorf("at least one collection ID is required")
+	}
+
+	payload := map[string][]string{
+		"collection_ids": collectionIDs,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "collections/batch-delete", bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("batch delete collections: %w", err)
+	}
+
+	var result BatchDeleteResult
+	if err := c.decodeResponse(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
