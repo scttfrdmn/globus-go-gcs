@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/scttfrdmn/globus-go-gcs/internal/auth"
+	"github.com/scttfrdmn/globus-go-gcs/internal/secureinput"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/config"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/gcs"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/output"
@@ -14,12 +15,13 @@ import (
 // NewS3KeysUpdateCmd creates the s3-keys-update command.
 func NewS3KeysUpdateCmd() *cobra.Command {
 	var (
-		profile         string
-		format          string
-		endpointFQDN    string
-		credentialID    string
-		accessKeyID     string
-		secretAccessKey string
+		profile      string
+		format       string
+		endpointFQDN string
+		credentialID string
+		accessKeyID  string
+		secretStdin  bool
+		secretEnv    string
 	)
 
 	cmd := &cobra.Command{
@@ -30,17 +32,41 @@ func NewS3KeysUpdateCmd() *cobra.Command {
 Use this command to rotate the secret access key for an S3 credential
 while keeping the same access key ID.
 
-Example:
+🔒 SECURITY: Secret access key is read securely (not from command line).
+
+Methods (in priority order):
+  1. Environment variable: --secret-env ENV_VAR_NAME
+  2. Stdin pipe: echo "secret" | ... --secret-stdin
+  3. Interactive prompt (default, recommended)
+
+Examples:
+  # Interactive prompt (most secure, recommended)
+  globus-connect-server user-credential s3-keys-update \
+    --endpoint example.data.globus.org \
+    --credential cred-abc123 \
+    --access-key-id AKIAIOSFODNN7EXAMPLE
+  # You will be prompted securely for the new secret
+
+  # From stdin (for scripts)
+  echo "newSecretKeyEXAMPLE" | \
+    globus-connect-server user-credential s3-keys-update \
+      --endpoint example.data.globus.org \
+      --credential cred-abc123 \
+      --access-key-id AKIAIOSFODNN7EXAMPLE \
+      --secret-stdin
+
+  # From environment variable
+  export S3_SECRET="newSecretKeyEXAMPLE"
   globus-connect-server user-credential s3-keys-update \
     --endpoint example.data.globus.org \
     --credential cred-abc123 \
     --access-key-id AKIAIOSFODNN7EXAMPLE \
-    --secret-access-key newSecretKeyEXAMPLE
+    --secret-env S3_SECRET
 
 Requires an active authentication session (use 'login' first).`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runS3KeysUpdate(cmd.Context(), profile, format, endpointFQDN, credentialID,
-				accessKeyID, secretAccessKey, cmd.OutOrStdout())
+				accessKeyID, secretStdin, secretEnv, cmd.OutOrStdout())
 		},
 	}
 
@@ -49,19 +75,19 @@ Requires an active authentication session (use 'login' first).`,
 	cmd.Flags().StringVar(&endpointFQDN, "endpoint", "", "Endpoint FQDN (e.g., abc.def.data.globus.org)")
 	cmd.Flags().StringVar(&credentialID, "credential", "", "User credential ID")
 	cmd.Flags().StringVar(&accessKeyID, "access-key-id", "", "S3 access key ID")
-	cmd.Flags().StringVar(&secretAccessKey, "secret-access-key", "", "New S3 secret access key")
+	cmd.Flags().BoolVar(&secretStdin, "secret-stdin", false, "Read new secret access key from stdin")
+	cmd.Flags().StringVar(&secretEnv, "secret-env", "", "Read new secret access key from environment variable")
 
 	_ = cmd.MarkFlagRequired("endpoint")
 	_ = cmd.MarkFlagRequired("credential")
 	_ = cmd.MarkFlagRequired("access-key-id")
-	_ = cmd.MarkFlagRequired("secret-access-key")
 
 	return cmd
 }
 
 // runS3KeysUpdate executes the s3-keys-update command.
 func runS3KeysUpdate(ctx context.Context, profile, formatStr, endpointFQDN, credentialID,
-	accessKeyID, secretAccessKey string, out interface{ Write([]byte) (int, error) }) error {
+	accessKeyID string, secretStdin bool, secretEnv string, out interface{ Write([]byte) (int, error) }) error {
 	// Load token
 	token, err := auth.LoadToken(profile)
 	if err != nil {
@@ -71,6 +97,17 @@ func runS3KeysUpdate(ctx context.Context, profile, formatStr, endpointFQDN, cred
 	// Check if token is valid
 	if !token.IsValid() {
 		return fmt.Errorf("token expired, please login again")
+	}
+
+	// Read secret access key securely
+	secretAccessKey, err := secureinput.ReadSecret(secureinput.ReadSecretOptions{
+		PromptMessage: "Enter new S3 secret access key",
+		UseStdin:      secretStdin,
+		EnvVar:        secretEnv,
+		AllowEmpty:    false,
+	})
+	if err != nil {
+		return fmt.Errorf("read secret access key: %w", err)
 	}
 
 	// Create output formatter
