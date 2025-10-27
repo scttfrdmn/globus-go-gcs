@@ -189,3 +189,19 @@ type S3Key struct {
 	SecretAccessKey string    `json:"secret_access_key,omitempty"`
 	CreatedAt       time.Time `json:"created_at,omitempty"`
 }
+
+// AuditLog represents an audit log entry.
+type AuditLog struct {
+	ID          string            `json:"id,omitempty"`
+	Timestamp   time.Time         `json:"timestamp"`
+	EventType   string            `json:"event_type,omitempty"`   // "transfer", "access", "authentication"
+	IdentityID  string            `json:"identity_id,omitempty"`
+	Username    string            `json:"username,omitempty"`
+	Resource    string            `json:"resource,omitempty"`     // collection, endpoint, etc.
+	ResourceID  string            `json:"resource_id,omitempty"`
+	Action      string            `json:"action,omitempty"`       // "read", "write", "delete", etc.
+	Result      string            `json:"result,omitempty"`       // "success", "failure"
+	Message     string            `json:"message,omitempty"`
+	ClientIP    string            `json:"client_ip,omitempty"`
+	Metadata    map[string]string `json:"metadata,omitempty"`
+}

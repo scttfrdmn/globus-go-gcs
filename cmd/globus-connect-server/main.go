@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 
+	auditcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/audit"
 	authcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/auth"
 	authpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/authpolicy"
 	collectioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/collection"
@@ -80,6 +81,9 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 
 	// User credential commands
 	rootCmd.AddCommand(usercredentialcmd.NewUserCredentialCmd())
+
+	// Audit commands
+	rootCmd.AddCommand(auditcmd.NewAuditCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
