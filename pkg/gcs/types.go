@@ -115,3 +115,112 @@ type Node struct {
 	Incoming  bool   `json:"incoming,omitempty"`
 	Outgoing  bool   `json:"outgoing,omitempty"`
 }
+
+// DomainConfig represents custom domain configuration.
+type DomainConfig struct {
+	Domain      string `json:"domain"`
+	Certificate string `json:"certificate,omitempty"`
+	PrivateKey  string `json:"private_key,omitempty"`
+	Verified    bool   `json:"verified,omitempty"`
+}
+
+// AuthPolicy represents an authentication policy.
+type AuthPolicy struct {
+	ID                   string   `json:"id,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	Description          string   `json:"description,omitempty"`
+	RequireMFA           bool     `json:"require_mfa,omitempty"`
+	RequireHighAssurance bool     `json:"require_high_assurance,omitempty"`
+	AllowedDomains       []string `json:"allowed_domains,omitempty"`
+	BlockedDomains       []string `json:"blocked_domains,omitempty"`
+}
+
+// OIDCServer represents an OpenID Connect server configuration.
+type OIDCServer struct {
+	ID           string   `json:"id,omitempty"`
+	Issuer       string   `json:"issuer,omitempty"`
+	ClientID     string   `json:"client_id,omitempty"`
+	ClientSecret string   `json:"client_secret,omitempty"`
+	Audience     string   `json:"audience,omitempty"`
+	Scopes       []string `json:"scopes,omitempty"`
+}
+
+// Session represents a CLI authentication session.
+type Session struct {
+	ID                      string            `json:"id,omitempty"`
+	Principal               string            `json:"principal,omitempty"`
+	AuthenticationMethod    string            `json:"authentication_method,omitempty"`
+	SessionTimeoutMins      int               `json:"session_timeout_mins,omitempty"`
+	InactivityTimeoutMins   int               `json:"inactivity_timeout_mins,omitempty"`
+	Consents                []string          `json:"consents,omitempty"`
+	RequiredConsents        []string          `json:"required_consents,omitempty"`
+	AllowedScopes           []string          `json:"allowed_scopes,omitempty"`
+	Metadata                map[string]string `json:"metadata,omitempty"`
+}
+
+// SharingPolicy represents a collection sharing policy.
+type SharingPolicy struct {
+	ID                 string   `json:"id,omitempty"`
+	CollectionID       string   `json:"collection_id,omitempty"`
+	Name               string   `json:"name,omitempty"`
+	Description        string   `json:"description,omitempty"`
+	SharingRestrict    string   `json:"sharing_restrict,omitempty"`
+	SharingUsersAllow  []string `json:"sharing_users_allow,omitempty"`
+	SharingUsersDeny   []string `json:"sharing_users_deny,omitempty"`
+	SharingGroupsAllow []string `json:"sharing_groups_allow,omitempty"`
+	SharingGroupsDeny  []string `json:"sharing_groups_deny,omitempty"`
+}
+
+// UserCredential represents user storage credentials.
+type UserCredential struct {
+	ID               string            `json:"id,omitempty"`
+	IdentityID       string            `json:"identity_id,omitempty"`
+	StorageGatewayID string            `json:"storage_gateway_id,omitempty"`
+	Type             string            `json:"type,omitempty"` // "activescale", "oauth", "s3"
+	Username         string            `json:"username,omitempty"`
+	S3Keys           []S3Key           `json:"s3_keys,omitempty"`
+	OAuthToken       string            `json:"oauth_token,omitempty"`
+	Metadata         map[string]string `json:"metadata,omitempty"`
+}
+
+// S3Key represents an S3 IAM access key.
+type S3Key struct {
+	AccessKeyID     string    `json:"access_key_id,omitempty"`
+	SecretAccessKey string    `json:"secret_access_key,omitempty"`
+	CreatedAt       time.Time `json:"created_at,omitempty"`
+}
+
+// AuditLog represents an audit log entry.
+type AuditLog struct {
+	ID          string            `json:"id,omitempty"`
+	Timestamp   time.Time         `json:"timestamp"`
+	EventType   string            `json:"event_type,omitempty"`   // "transfer", "access", "authentication"
+	IdentityID  string            `json:"identity_id,omitempty"`
+	Username    string            `json:"username,omitempty"`
+	Resource    string            `json:"resource,omitempty"`     // collection, endpoint, etc.
+	ResourceID  string            `json:"resource_id,omitempty"`
+	Action      string            `json:"action,omitempty"`       // "read", "write", "delete", etc.
+	Result      string            `json:"result,omitempty"`       // "success", "failure"
+	Message     string            `json:"message,omitempty"`
+	ClientIP    string            `json:"client_ip,omitempty"`
+	Metadata    map[string]string `json:"metadata,omitempty"`
+}
+
+// UpgradeInfo represents endpoint upgrade information.
+type UpgradeInfo struct {
+	CurrentVersion  string   `json:"current_version,omitempty"`
+	LatestVersion   string   `json:"latest_version,omitempty"`
+	UpgradeRequired bool     `json:"upgrade_required,omitempty"`
+	Compatible      bool     `json:"compatible,omitempty"`
+	ReleaseNotes    string   `json:"release_notes,omitempty"`
+	UpgradePath     []string `json:"upgrade_path,omitempty"`
+}
+
+// UpgradeResult represents the result of an endpoint upgrade operation.
+type UpgradeResult struct {
+	Success        bool   `json:"success"`
+	PreviousVersion string `json:"previous_version,omitempty"`
+	NewVersion     string `json:"new_version,omitempty"`
+	Message        string `json:"message,omitempty"`
+	RollbackAvailable bool `json:"rollback_available,omitempty"`
+}

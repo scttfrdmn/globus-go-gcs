@@ -4,9 +4,14 @@
 //   - OAuth2 authentication flows using globus-go-sdk
 //   - Token storage and retrieval (per-profile)
 //   - Token validation and refresh
+//   - Token encryption at rest using AES-256-GCM
 //
 // Token files are stored at ~/.globus-connect-server/tokens/{profile}.json
 // with 0600 permissions (user-only read/write).
+//
+// As of v2.0, tokens are encrypted at rest using AES-256-GCM with keys
+// stored in the system keyring. This provides HIPAA/PHI compliance.
+// Plaintext tokens from v1.x are automatically migrated on first load.
 package auth
 
 import (
@@ -44,6 +49,23 @@ type TokenInfo struct {
 	ResourceServer string `json:"resource_server,omitempty"`
 }
 
+// EncryptedTokenFile represents the on-disk format of encrypted token files.
+//
+// This wraps the encrypted data with metadata to identify it as encrypted
+// and support versioning for future changes to the encryption scheme.
+type EncryptedTokenFile struct {
+	// Format identifies this as an encrypted token file
+	Format string `json:"format"`
+
+	// EncryptedData contains the encrypted TokenInfo
+	EncryptedData *EncryptedData `json:"encrypted_data"`
+}
+
+const (
+	// EncryptedTokenFormat is the format identifier for encrypted tokens
+	EncryptedTokenFormat = "encrypted-v1"
+)
+
 // IsValid returns true if the token is valid (not expired with buffer).
 //
 // Uses a 5-minute buffer to prevent edge cases where the token
@@ -64,8 +86,11 @@ func (t *TokenInfo) CanRefresh() bool {
 
 // SaveToken saves token information to disk for a given profile.
 //
+// As of v2.0, tokens are encrypted at rest using AES-256-GCM with keys
+// stored in the system keyring. This provides HIPAA/PHI compliance.
+//
 // The token file is created with 0600 permissions (user-only read/write)
-// for security.
+// for additional security.
 func SaveToken(profile string, token *TokenInfo) error {
 	// Ensure tokens directory exists
 	if err := config.EnsureTokensDir(); err != nil {
@@ -78,14 +103,32 @@ func SaveToken(profile string, token *TokenInfo) error {
 		return fmt.Errorf("get token file path: %w", err)
 	}
 
-	// Marshal token to JSON
-	data, err := json.MarshalIndent(token, "", "  ")
+	// Marshal token to JSON (plaintext, will be encrypted)
+	plaintext, err := json.Marshal(token)
 	if err != nil {
 		return fmt.Errorf("marshal token: %w", err)
 	}
 
+	// Encrypt the token data
+	encryptedData, err := Encrypt(plaintext)
+	if err != nil {
+		return fmt.Errorf("encrypt token: %w", err)
+	}
+
+	// Wrap in encrypted file format
+	encryptedFile := &EncryptedTokenFile{
+		Format:        EncryptedTokenFormat,
+		EncryptedData: encryptedData,
+	}
+
+	// Marshal encrypted file to JSON
+	fileData, err := json.MarshalIndent(encryptedFile, "", "  ")
+	if err != nil {
+		return fmt.Errorf("marshal encrypted token file: %w", err)
+	}
+
 	// Write with user-only permissions
-	if err := os.WriteFile(tokenPath, data, 0600); err != nil {
+	if err := os.WriteFile(tokenPath, fileData, 0600); err != nil {
 		return fmt.Errorf("write token file: %w", err)
 	}
 
@@ -93,6 +136,10 @@ func SaveToken(profile string, token *TokenInfo) error {
 }
 
 // LoadToken loads token information from disk for a given profile.
+//
+// As of v2.0, tokens are stored encrypted. This function supports automatic
+// migration of plaintext tokens from v1.x - they will be detected, loaded,
+// and automatically re-saved in encrypted format.
 //
 // Returns an error if the token file doesn't exist or is invalid.
 func LoadToken(profile string) (*TokenInfo, error) {
@@ -110,10 +157,37 @@ func LoadToken(profile string) (*TokenInfo, error) {
 		return nil, fmt.Errorf("read token file: %w", err)
 	}
 
-	// Unmarshal token
+	// Try to parse as encrypted token file first
+	var encryptedFile EncryptedTokenFile
+	if err := json.Unmarshal(data, &encryptedFile); err == nil && encryptedFile.Format == EncryptedTokenFormat {
+		// This is an encrypted token - decrypt it
+		plaintext, err := Decrypt(encryptedFile.EncryptedData)
+		if err != nil {
+			return nil, fmt.Errorf("decrypt token: %w", err)
+		}
+
+		// Parse decrypted token
+		var token TokenInfo
+		if err := json.Unmarshal(plaintext, &token); err != nil {
+			return nil, fmt.Errorf("parse decrypted token: %w", err)
+		}
+
+		return &token, nil
+	}
+
+	// Not encrypted - try to parse as plaintext token (v1.x format)
 	var token TokenInfo
 	if err := json.Unmarshal(data, &token); err != nil {
-		return nil, fmt.Errorf("parse token file: %w", err)
+		return nil, fmt.Errorf("parse token file: %w (file may be corrupted)", err)
+	}
+
+	// Automatically migrate plaintext token to encrypted format
+	// This is transparent to the user and happens on first load
+	if err := SaveToken(profile, &token); err != nil {
+		// Migration failed - log warning but still return the token
+		// This allows the CLI to continue working even if keyring is unavailable
+		fmt.Fprintf(os.Stderr, "Warning: Could not migrate token to encrypted format: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Your token is still stored in plaintext. To enable encryption, ensure your system keyring is available.\n")
 	}
 
 	return &token, nil

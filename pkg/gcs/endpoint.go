@@ -131,3 +131,171 @@ func (c *Client) ConvertDeploymentKey(ctx context.Context, oldKey string) (*Depl
 
 	return &result, nil
 }
+
+// SetEndpointOwner assigns the endpoint owner role to a specified principal.
+func (c *Client) SetEndpointOwner(ctx context.Context, principalURN string) error {
+	if principalURN == "" {
+		return fmt.Errorf("principal URN is required")
+	}
+
+	payload := map[string]string{
+		"principal": principalURN,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/owner", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set endpoint owner: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// SetEndpointOwnerString sets a custom display name for the endpoint owner.
+func (c *Client) SetEndpointOwnerString(ctx context.Context, ownerString string) error {
+	if ownerString == "" {
+		return fmt.Errorf("owner string is required")
+	}
+
+	payload := map[string]string{
+		"owner_string": ownerString,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/owner-string", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set endpoint owner string: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// ResetEndpointOwnerString resets the owner string to the default (ClientID).
+func (c *Client) ResetEndpointOwnerString(ctx context.Context) error {
+	resp, err := c.doRequest(ctx, http.MethodDelete, "endpoint/owner-string", nil)
+	if err != nil {
+		return fmt.Errorf("reset endpoint owner string: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// SetSubscriptionID updates the subscription assignment for the endpoint.
+func (c *Client) SetSubscriptionID(ctx context.Context, subscriptionID string) error {
+	if subscriptionID == "" {
+		return fmt.Errorf("subscription ID is required")
+	}
+
+	payload := map[string]string{
+		"subscription_id": subscriptionID,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPut, "endpoint/subscription", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("set subscription ID: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// SetupEndpointDomain configures a custom domain for the endpoint.
+func (c *Client) SetupEndpointDomain(ctx context.Context, config *DomainConfig) error {
+	if config == nil {
+		return fmt.Errorf("domain configuration is required")
+	}
+	if config.Domain == "" {
+		return fmt.Errorf("domain is required")
+	}
+
+	body, err := json.Marshal(config)
+	if err != nil {
+		return fmt.Errorf("marshal request: %w", err)
+	}
+
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint/domain", bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("setup endpoint domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// GetEndpointDomain retrieves the custom domain configuration for the endpoint.
+func (c *Client) GetEndpointDomain(ctx context.Context) (*DomainConfig, error) {
+	resp, err := c.doRequest(ctx, http.MethodGet, "endpoint/domain", nil)
+	if err != nil {
+		return nil, fmt.Errorf("get endpoint domain: %w", err)
+	}
+
+	var domain DomainConfig
+	if err := c.decodeResponse(resp, &domain); err != nil {
+		return nil, err
+	}
+
+	return &domain, nil
+}
+
+// DeleteEndpointDomain removes the custom domain configuration from the endpoint.
+func (c *Client) DeleteEndpointDomain(ctx context.Context) error {
+	resp, err := c.doRequest(ctx, http.MethodDelete, "endpoint/domain", nil)
+	if err != nil {
+		return fmt.Errorf("delete endpoint domain: %w", err)
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+
+	return nil
+}
+
+// CheckEndpointUpgrade checks if an endpoint upgrade is available.
+func (c *Client) CheckEndpointUpgrade(ctx context.Context) (*UpgradeInfo, error) {
+	resp, err := c.doRequest(ctx, http.MethodGet, "endpoint/upgrade/check", nil)
+	if err != nil {
+		return nil, fmt.Errorf("check endpoint upgrade: %w", err)
+	}
+
+	var info UpgradeInfo
+	if err := c.decodeResponse(resp, &info); err != nil {
+		return nil, err
+	}
+
+	return &info, nil
+}
+
+// UpgradeEndpoint upgrades the endpoint to the latest version.
+func (c *Client) UpgradeEndpoint(ctx context.Context) (*UpgradeResult, error) {
+	resp, err := c.doRequest(ctx, http.MethodPost, "endpoint/upgrade", nil)
+	if err != nil {
+		return nil, fmt.Errorf("upgrade endpoint: %w", err)
+	}
+
+	var result UpgradeResult
+	if err := c.decodeResponse(resp, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

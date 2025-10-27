@@ -8,12 +8,18 @@ import (
 	"fmt"
 	"os"
 
+	auditcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/audit"
 	authcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/auth"
+	authpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/authpolicy"
 	collectioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/collection"
 	endpointcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/endpoint"
 	nodecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/node"
+	oidccmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/oidc"
 	rolecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/role"
+	sessioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/session"
+	sharingpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/sharingpolicy"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
+	usercredentialcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/usercredential"
 	"github.com/spf13/cobra"
 )
 
@@ -61,8 +67,23 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 	// Role commands
 	rootCmd.AddCommand(rolecmd.NewRoleCmd())
 
-	// TODO: Add additional command groups
-	// rootCmd.AddCommand(newSessionCmd())
+	// Auth policy commands
+	rootCmd.AddCommand(authpolicycmd.NewAuthPolicyCmd())
+
+	// OIDC commands
+	rootCmd.AddCommand(oidccmd.NewOIDCCmd())
+
+	// Session commands
+	rootCmd.AddCommand(sessioncmd.NewSessionCmd())
+
+	// Sharing policy commands
+	rootCmd.AddCommand(sharingpolicycmd.NewSharingPolicyCmd())
+
+	// User credential commands
+	rootCmd.AddCommand(usercredentialcmd.NewUserCredentialCmd())
+
+	// Audit commands
+	rootCmd.AddCommand(auditcmd.NewAuditCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

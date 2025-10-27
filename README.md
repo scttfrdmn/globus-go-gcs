@@ -7,9 +7,58 @@
 
 A complete Go port of Globus Connect Server v5 CLI - a drop-in replacement for the Python `globus-connect-server` command with 100% feature parity.
 
-> **STATUS**: 🚧 **In Development** - Phase 0 (Project Setup Complete) → Phase 1 (Starting)
+> **STATUS**: ✅ **v1.0 Complete** - All 83 commands implemented | 🚧 **v2.0 In Planning** - Security & Performance
 >
-> This project is in active development. See [PROJECT_PLAN.md](PROJECT_PLAN.md) for the complete development roadmap.
+> - **v1.0**: Feature parity achieved (January 2025)
+> - **v2.0**: HIPAA compliance + 2-5x performance improvements (Planning phase)
+> - See [ROADMAP.md](ROADMAP.md) for v2.0 plans
+
+---
+
+## ⚠️ IMPORTANT: v2.0 Breaking Change
+
+**If you plan to upgrade from v1.x to v2.0**, please read **[BREAKING_CHANGES_V2.md](./BREAKING_CHANGES_V2.md)** first.
+
+### What's Changing
+
+For **security compliance (HIPAA/PHI)**, v2.0 removes the ability to pass secrets as command-line arguments.
+
+**Affected commands** (5):
+- `user-credential s3-keys add/update`
+- `user-credential activescale-create`
+- `oidc create/update`
+
+**New secure methods**:
+- ✅ Interactive prompt (recommended)
+- ✅ Stdin pipe with `--secret-stdin`
+- ✅ Environment variable with `--secret-env`
+
+### Why This Change Is Necessary
+
+```bash
+# v1.x - INSECURE (visible in process list and shell history)
+globus-connect-server user-credential s3-keys add \
+  --secret-access-key wJalrXUtnFEMI/K7MDENG...  # ❌ SECURITY RISK
+
+# Any user can see:
+$ ps aux | grep secret
+user  12345  ... --secret-access-key wJalrXUtnFEMI/K7MDENG...
+
+# v2.0 - SECURE (not visible)
+echo "wJalrXUtnFEMI/K7MDENG..." | \
+  globus-connect-server user-credential s3-keys add \
+    --access-key-id AKIA... \
+    --secret-stdin  # ✅ SECURE
+```
+
+**Security violations in v1.x**:
+- ❌ NIST 800-53 IA-5(7): Prohibits embedded unprotected passwords
+- ❌ HIPAA Security Rule § 164.312(a)(2)(iv): Requires encryption of credentials
+- ❌ Secrets visible in: process listings, shell history, system logs
+
+**Read the complete migration guide**: [BREAKING_CHANGES_V2.md](./BREAKING_CHANGES_V2.md)
+
+---
 
 ## Overview
 

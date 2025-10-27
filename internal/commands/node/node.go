@@ -20,6 +20,11 @@ outgoing transfers, or both.`,
 	cmd.AddCommand(NewCreateCmd())
 	cmd.AddCommand(NewUpdateCmd())
 	cmd.AddCommand(NewDeleteCmd())
+	cmd.AddCommand(NewSetupCmd())
+	cmd.AddCommand(NewCleanupCmd())
+	cmd.AddCommand(NewEnableCmd())
+	cmd.AddCommand(NewDisableCmd())
+	cmd.AddCommand(NewNewSecretCmd())
 
 	return cmd
 }

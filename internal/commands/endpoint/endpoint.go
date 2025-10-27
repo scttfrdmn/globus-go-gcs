@@ -16,6 +16,15 @@ defining the service's identity and general settings.`,
 	// Add subcommands
 	cmd.AddCommand(NewShowCmd())
 	cmd.AddCommand(NewUpdateCmd())
+	cmd.AddCommand(NewSetupCmd())
+	cmd.AddCommand(NewCleanupCmd())
+	cmd.AddCommand(NewKeyConvertCmd())
+	cmd.AddCommand(NewSetOwnerCmd())
+	cmd.AddCommand(NewSetOwnerStringCmd())
+	cmd.AddCommand(NewResetOwnerStringCmd())
+	cmd.AddCommand(NewSetSubscriptionIDCmd())
+	cmd.AddCommand(NewDomainCmd())
+	cmd.AddCommand(NewUpgradeCmd())
 
 	return cmd
 }
