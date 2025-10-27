@@ -1,6 +1,6 @@
 module github.com/scttfrdmn/globus-go-gcs
 
-go 1.25.3
+go 1.22.0
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.1 // indirect
