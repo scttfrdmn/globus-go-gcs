@@ -22,6 +22,8 @@ Common role types include:
 	// Add subcommands
 	cmd.AddCommand(NewListCmd())
 	cmd.AddCommand(NewShowCmd())
+	cmd.AddCommand(NewCreateCmd())
+	cmd.AddCommand(NewDeleteCmd())
 
 	return cmd
 }

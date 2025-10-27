@@ -16,6 +16,9 @@ Amazon S3, Azure Blob Storage, Google Cloud Storage, and others.`,
 	// Add subcommands
 	cmd.AddCommand(NewListCmd())
 	cmd.AddCommand(NewShowCmd())
+	cmd.AddCommand(NewCreateCmd())
+	cmd.AddCommand(NewUpdateCmd())
+	cmd.AddCommand(NewDeleteCmd())
 
 	return cmd
 }

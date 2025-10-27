@@ -17,6 +17,9 @@ outgoing transfers, or both.`,
 	// Add subcommands
 	cmd.AddCommand(NewListCmd())
 	cmd.AddCommand(NewShowCmd())
+	cmd.AddCommand(NewCreateCmd())
+	cmd.AddCommand(NewUpdateCmd())
+	cmd.AddCommand(NewDeleteCmd())
 
 	return cmd
 }
