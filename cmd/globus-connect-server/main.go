@@ -12,6 +12,7 @@ import (
 	collectioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/collection"
 	endpointcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/endpoint"
 	nodecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/node"
+	rolecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/role"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
 	"github.com/spf13/cobra"
 )
@@ -56,6 +57,9 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 
 	// Node commands
 	rootCmd.AddCommand(nodecmd.NewNodeCmd())
+
+	// Role commands
+	rootCmd.AddCommand(rolecmd.NewRoleCmd())
 
 	// TODO: Add additional command groups
 	// rootCmd.AddCommand(newSessionCmd())
