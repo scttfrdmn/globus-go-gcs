@@ -144,3 +144,16 @@ type OIDCServer struct {
 	Audience     string   `json:"audience,omitempty"`
 	Scopes       []string `json:"scopes,omitempty"`
 }
+
+// Session represents a CLI authentication session.
+type Session struct {
+	ID                      string            `json:"id,omitempty"`
+	Principal               string            `json:"principal,omitempty"`
+	AuthenticationMethod    string            `json:"authentication_method,omitempty"`
+	SessionTimeoutMins      int               `json:"session_timeout_mins,omitempty"`
+	InactivityTimeoutMins   int               `json:"inactivity_timeout_mins,omitempty"`
+	Consents                []string          `json:"consents,omitempty"`
+	RequiredConsents        []string          `json:"required_consents,omitempty"`
+	AllowedScopes           []string          `json:"allowed_scopes,omitempty"`
+	Metadata                map[string]string `json:"metadata,omitempty"`
+}

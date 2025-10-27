@@ -15,6 +15,7 @@ import (
 	nodecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/node"
 	oidccmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/oidc"
 	rolecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/role"
+	sessioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/session"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
 	"github.com/spf13/cobra"
 )
@@ -69,8 +70,8 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 	// OIDC commands
 	rootCmd.AddCommand(oidccmd.NewOIDCCmd())
 
-	// TODO: Add additional command groups
-	// rootCmd.AddCommand(newSessionCmd())
+	// Session commands
+	rootCmd.AddCommand(sessioncmd.NewSessionCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
