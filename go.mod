@@ -1,6 +1,6 @@
 module github.com/scttfrdmn/globus-go-gcs
 
-go 1.22.0
+go 1.24.0
 
 require (
 	al.essio.dev/pkg/shellescape v1.5.1 // indirect
@@ -27,7 +27,8 @@ require (
 	github.com/zalando/go-keyring v0.2.6 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/exp v0.0.0-20250620022241-b7579e27df2b // indirect
-	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/term v0.36.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	modernc.org/libc v1.66.10 // indirect
 	modernc.org/mathutil v1.7.1 // indirect

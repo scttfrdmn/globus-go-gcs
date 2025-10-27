@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/scttfrdmn/globus-go-gcs/internal/auth"
+	"github.com/scttfrdmn/globus-go-gcs/internal/secureinput"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/config"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/gcs"
 	"github.com/scttfrdmn/globus-go-gcs/pkg/output"
@@ -20,7 +21,9 @@ func NewUpdateCmd() *cobra.Command {
 		endpointFQDN string
 		issuer       string
 		clientID     string
-		clientSecret string
+		updateSecret bool
+		secretStdin  bool
+		secretEnv    string
 		audience     string
 		scopes       string
 	)
@@ -32,14 +35,31 @@ func NewUpdateCmd() *cobra.Command {
 
 Only specified fields will be updated.
 
-Example:
+🔒 SECURITY: Client secret is read securely (not from command line).
+
+To update the client secret, use --update-secret flag (prompts securely).
+Can also use --secret-stdin or --secret-env with --update-secret.
+
+Examples:
+  # Update client secret interactively (most secure)
   globus-connect-server oidc update \
     --endpoint example.data.globus.org \
-    --client-secret "new-secret"
+    --update-secret
+  # You will be prompted securely for the new secret
+
+  # Update other fields (issuer, audience, scopes)
+  globus-connect-server oidc update \
+    --endpoint example.data.globus.org \
+    --issuer "https://new-id.example.org"
+
+  # Update secret from stdin
+  echo "new-secret" | globus-connect-server oidc update \
+    --endpoint example.data.globus.org \
+    --update-secret --secret-stdin
 
 Requires an active authentication session (use 'login' first).`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			return runUpdate(cmd.Context(), profile, format, endpointFQDN, issuer, clientID, clientSecret, audience, scopes, cmd.OutOrStdout())
+			return runUpdate(cmd.Context(), profile, format, endpointFQDN, issuer, clientID, updateSecret, secretStdin, secretEnv, audience, scopes, cmd.OutOrStdout())
 		},
 	}
 
@@ -48,7 +68,9 @@ Requires an active authentication session (use 'login' first).`,
 	cmd.Flags().StringVar(&endpointFQDN, "endpoint", "", "Endpoint FQDN")
 	cmd.Flags().StringVar(&issuer, "issuer", "", "OIDC issuer URL")
 	cmd.Flags().StringVar(&clientID, "client-id", "", "OAuth2 client ID")
-	cmd.Flags().StringVar(&clientSecret, "client-secret", "", "OAuth2 client secret")
+	cmd.Flags().BoolVar(&updateSecret, "update-secret", false, "Update the client secret")
+	cmd.Flags().BoolVar(&secretStdin, "secret-stdin", false, "Read new client secret from stdin (requires --update-secret)")
+	cmd.Flags().StringVar(&secretEnv, "secret-env", "", "Read new client secret from environment variable (requires --update-secret)")
 	cmd.Flags().StringVar(&audience, "audience", "", "OAuth2 audience")
 	cmd.Flags().StringVar(&scopes, "scopes", "", "Comma-separated list of scopes")
 
@@ -58,7 +80,7 @@ Requires an active authentication session (use 'login' first).`,
 }
 
 // runUpdate executes the oidc update command.
-func runUpdate(ctx context.Context, profile, formatStr, endpointFQDN, issuer, clientID, clientSecret, audience, scopes string, out interface{ Write([]byte) (int, error) }) error {
+func runUpdate(ctx context.Context, profile, formatStr, endpointFQDN, issuer, clientID string, updateSecret, secretStdin bool, secretEnv, audience, scopes string, out interface{ Write([]byte) (int, error) }) error {
 	token, err := auth.LoadToken(profile)
 	if err != nil {
 		return fmt.Errorf("not logged in: %w (use 'login' command first)", err)
@@ -82,9 +104,21 @@ func runUpdate(ctx context.Context, profile, formatStr, endpointFQDN, issuer, cl
 	if clientID != "" {
 		server.ClientID = clientID
 	}
-	if clientSecret != "" {
+
+	// Read client secret securely if updating
+	if updateSecret {
+		clientSecret, err := secureinput.ReadSecret(secureinput.ReadSecretOptions{
+			PromptMessage: "Enter new OAuth2 client secret",
+			UseStdin:      secretStdin,
+			EnvVar:        secretEnv,
+			AllowEmpty:    false,
+		})
+		if err != nil {
+			return fmt.Errorf("read client secret: %w", err)
+		}
 		server.ClientSecret = clientSecret
 	}
+
 	if audience != "" {
 		server.Audience = audience
 	}
