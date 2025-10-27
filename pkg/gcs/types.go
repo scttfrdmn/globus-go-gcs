@@ -123,3 +123,24 @@ type DomainConfig struct {
 	PrivateKey  string `json:"private_key,omitempty"`
 	Verified    bool   `json:"verified,omitempty"`
 }
+
+// AuthPolicy represents an authentication policy.
+type AuthPolicy struct {
+	ID                   string   `json:"id,omitempty"`
+	Name                 string   `json:"name,omitempty"`
+	Description          string   `json:"description,omitempty"`
+	RequireMFA           bool     `json:"require_mfa,omitempty"`
+	RequireHighAssurance bool     `json:"require_high_assurance,omitempty"`
+	AllowedDomains       []string `json:"allowed_domains,omitempty"`
+	BlockedDomains       []string `json:"blocked_domains,omitempty"`
+}
+
+// OIDCServer represents an OpenID Connect server configuration.
+type OIDCServer struct {
+	ID           string   `json:"id,omitempty"`
+	Issuer       string   `json:"issuer,omitempty"`
+	ClientID     string   `json:"client_id,omitempty"`
+	ClientSecret string   `json:"client_secret,omitempty"`
+	Audience     string   `json:"audience,omitempty"`
+	Scopes       []string `json:"scopes,omitempty"`
+}

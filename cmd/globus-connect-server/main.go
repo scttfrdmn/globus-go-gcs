@@ -9,9 +9,11 @@ import (
 	"os"
 
 	authcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/auth"
+	authpolicycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/authpolicy"
 	collectioncmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/collection"
 	endpointcmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/endpoint"
 	nodecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/node"
+	oidccmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/oidc"
 	rolecmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/role"
 	storagegatewaycmd "github.com/scttfrdmn/globus-go-gcs/internal/commands/storagegateway"
 	"github.com/spf13/cobra"
@@ -60,6 +62,12 @@ For more information, see: https://docs.globus.org/globus-connect-server/v5/`,
 
 	// Role commands
 	rootCmd.AddCommand(rolecmd.NewRoleCmd())
+
+	// Auth policy commands
+	rootCmd.AddCommand(authpolicycmd.NewAuthPolicyCmd())
+
+	// OIDC commands
+	rootCmd.AddCommand(oidccmd.NewOIDCCmd())
 
 	// TODO: Add additional command groups
 	// rootCmd.AddCommand(newSessionCmd())
